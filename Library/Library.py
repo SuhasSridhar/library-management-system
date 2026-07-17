@@ -6,6 +6,7 @@
 from Members.Member import Member
 from Inventory.Book import Book
 from Inventory.BookCopy import BookCopy
+from enums import Waitlist_Outcomes
 
 class Library:
     def __init__(self):
@@ -66,5 +67,15 @@ class Library:
         if not member or not copy:
             return False
         member.return_copy(copy)
-        copy.return_copy()
+        copy.Book.return_copy(copy)
         return True
+    
+    def waitlist(self, title: Book, member:Member) -> Waitlist_Outcomes:
+        if not member or not title:
+            return Waitlist_Outcomes.ERROR
+        if not member.waitlist_eligibility():
+            return Waitlist_Outcomes.MEMBER_INELIGIBLE
+        waitlist_result = title.add_member_to_waitlist(member)
+        if waitlist_result == Waitlist_Outcomes.SUCCESS:
+            member.add_title_to_waitlist(title)
+        return waitlist_result

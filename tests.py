@@ -150,3 +150,134 @@ def test_return_invalid_arguments(library):
 
     assert library.return_book(None, member) is False
     assert library.return_book(None, None) is False
+
+def test_member_can_join_waitlist(library):
+    library.add_member("STU002", "Alice", "Student")
+    library.add_member("STU003", "Bob", "Student")
+    library.add_member("STU004", "David", "Student")
+
+    assert library.borrow("STU001", "ISBN001")
+    assert library.borrow("STU002", "ISBN001")
+    assert library.borrow("STU003", "ISBN001")
+
+    member = library.find_member("STU004")
+    book = library.find_book("ISBN001")
+
+    result = library.waitlist(book, member)
+
+    assert result.name == "SUCCESS"
+    assert member.waiting_lists == [book]
+    assert len(book.waiting_list) == 1
+
+def test_member_cannot_join_waitlist_twice(library):
+    library.add_member("STU002", "Alice", "Student")
+    library.add_member("STU003", "Bob", "Student")
+    library.add_member("STU004", "David", "Student")
+
+    library.borrow("STU001", "ISBN001")
+    library.borrow("STU002", "ISBN001")
+    library.borrow("STU003", "ISBN001")
+
+    member = library.find_member("STU004")
+    book = library.find_book("ISBN001")
+
+    assert library.waitlist(book, member).name == "SUCCESS"
+    assert library.waitlist(book, member).name == "ALREADY_WAITING"
+
+    assert len(book.waiting_list) == 1
+
+def test_returned_copy_reserved_for_waiting_member(library):
+    library.add_member("STU002", "Alice", "Student")
+    library.add_member("STU003", "Bob", "Student")
+    library.add_member("STU004", "David", "Student")
+
+    library.borrow("STU001", "ISBN001")
+    library.borrow("STU002", "ISBN001")
+    library.borrow("STU003", "ISBN001")
+
+    waiting_member = library.find_member("STU004")
+    book = library.find_book("ISBN001")
+
+    library.waitlist(book, waiting_member)
+
+    borrower = library.find_member("STU001")
+    copy = borrower.borrowed_books[0]
+
+    library.return_book(copy, borrower)
+
+    assert copy.state == Book_State.RESERVED
+    assert copy.reservation == waiting_member
+    assert copy in waiting_member.active_reservations
+    assert book not in waiting_member.waiting_lists
+
+from datetime import date, timedelta
+
+def test_expired_reservation_reassigned(library):
+    library.add_member("STU002", "Alice", "Student")
+    library.add_member("STU003", "Bob", "Student")
+    library.add_member("STU004", "David", "Student")
+    library.add_member("STU005", "Charlie", "Student")
+
+    library.borrow("STU001", "ISBN001")
+    library.borrow("STU002", "ISBN001")
+    library.borrow("STU003", "ISBN001")
+
+    book = library.find_book("ISBN001")
+
+    david = library.find_member("STU004")
+    charlie = library.find_member("STU005")
+
+    library.waitlist(book, david)
+    library.waitlist(book, charlie)
+
+    borrower = library.find_member("STU001")
+    copy = borrower.borrowed_books[0]
+
+    library.return_book(copy, borrower)
+
+    copy.reservation_due = date.today() - timedelta(days=1)
+
+    book.expired_validation()
+
+    assert copy.reservation == charlie
+    assert copy in charlie.active_reservations
+    assert copy not in david.active_reservations
+
+def test_member_with_overdue_book_cannot_borrow(library):
+    library.add_book(
+        "Book2",
+        "Author",
+        "ISBN002",
+        ["BC010"]
+    )
+
+    library.borrow("STU001", "ISBN001")
+
+    member = library.find_member("STU001")
+
+    copy = member.borrowed_books[0]
+
+    copy.due_date = date.today() - timedelta(days=1)
+
+    assert library.borrow("STU001", "ISBN002") is False
+
+def test_returning_overdue_book_restores_borrowing(library):
+    library.add_book(
+        "Book2",
+        "Author",
+        "ISBN002",
+        ["BC010"]
+    )
+
+    library.borrow("STU001", "ISBN001")
+
+    member = library.find_member("STU001")
+    copy = member.borrowed_books[0]
+
+    copy.due_date = date.today() - timedelta(days=1)
+
+    assert library.borrow("STU001", "ISBN002") is False
+
+    library.return_book(copy, member)
+
+    assert library.borrow("STU001", "ISBN002") is True

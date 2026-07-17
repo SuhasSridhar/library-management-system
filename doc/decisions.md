@@ -20,3 +20,12 @@ Library coordinates workflows while the domain objects encapsulate business beha
 ## Why Member stores BookCopy instead of barcode
 The domain collaborates through object references instead of primitive identifiers.
 Identifiers are used only at the application boundary.
+
+---
+
+## V2
+- Book owns the waiting list.
+- BookCopy owns reservation state.
+- Reservation expiry is processed at the Book aggregate level.
+- Overdue status is derived from borrowed copies instead of being stored.
+- Member borrowing eligibility is computed dynamically.
