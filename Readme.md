@@ -21,66 +21,93 @@ The project is intentionally developed in multiple iterations, introducing techn
 
 ## Roadmap
 
-### V1 — Domain Model (Completed)
+The project evolves in four phases. Each phase introduces new concepts only after the previous one is stable.
 
-Pure object-oriented implementation.
+### Phase 1 — Domain Modeling
 
-Features:
+#### V1 — Core Domain (Completed)
 
 - Book registration
-- Multiple physical copies per title
 - Member registration
+- Multiple physical copies
 - Borrow workflow
 - Return workflow
 - Borrow eligibility
-- In-memory storage
-- Unit tests
+- In-memory implementation
+- Unit & integration tests
 
-No frameworks or databases are used.
+#### V2 — Circulation Policies (Completed)
 
----
-
-### V2 — Domain Features
-
+- Waiting lists
 - Reservations
-- Waiting list
-- Faculty priority
 - Reservation expiry
 - Overdue restrictions
+- Faculty priority
+- Domain invariants
+- Rich aggregate behavior
+
+#### V3 — Inventory Evolution
+
+- Damaged copies
+- Lost copies
+- Remove from circulation
+- Inventory consistency
+- Tests
+
+#### V4 — Search & Membership Policies
+
+- Search by ISBN
+- Search by title
+- Search by author
+- Membership policies
+- Borrowing policy evolution
+
+#### V5 — Engineering Review
+
+- SOLID review
+- GRASP review
+- Aggregate review
+- Responsibility review
+- Refactoring
+- Test review
+- Documentation
 
 ---
 
-### V3 — REST API
+### Phase 2 — Persistence
 
-Expose the existing domain model using FastAPI.
-
----
-
-### V4 — Persistence
-
-Replace in-memory storage with PostgreSQL through repository abstractions.
+- Repository interfaces
+- In-memory repositories
+- SQLite implementation
+- SQLAlchemy mapping
+- Transactions
 
 ---
 
-### V5 — Infrastructure
+### Phase 3 — Application Layer
 
-Introduce:
+- FastAPI
+- DTOs
+- Validation
+- Dependency Injection
+- Exception handling
 
+---
+
+### Phase 4 — Production Infrastructure
+
+- PostgreSQL
 - Redis
+- Background scheduler
 - Authentication
-- Caching
-
----
-
-### V6 — Production Engineering
-
 - Docker
-- CI/CD
 - Logging
-- Monitoring
-- Deployment
+- Metrics
+- CI/CD
 
 ---
+
+The emphasis of this repository is evolving the software through changing business requirements before introducing infrastructure.
 
 ## Current Project Structure
 
@@ -137,13 +164,17 @@ Library
 
 This repository prioritizes:
 
-- Correct responsibility assignment
-- Encapsulation
-- Composition over inheritance
-- Rich domain models
+- Requirement analysis
+- Domain modeling
+- Object-oriented design
+- Responsibility assignment
+- Aggregate design
+- State transitions
+- Business invariants
+- SOLID & GRASP principles
+- Test-driven evolution
+- Clean architecture
 - Incremental software evolution
-
-Infrastructure concerns are intentionally postponed until the domain model is stable.
 
 ---
 
@@ -151,4 +182,8 @@ Infrastructure concerns are intentionally postponed until the domain model is st
 
 Current milestone:
 
-**V1 — Complete**
+**Phase 1 — In Progress**
+
+- ✅ V1 Complete
+- ✅ V2 Complete
+- ⏳ V3 Inventory Evolution

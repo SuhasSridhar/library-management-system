@@ -1,4 +1,5 @@
 # Responsibility : Biblographic data, and manage the inventory of it's physical copies.
+from enums import Book_State
 from .BookCopy import BookCopy
 from datetime import date, timedelta
 from Members.Member import Member
@@ -12,6 +13,7 @@ class Book:
         self.waiting_list = deque()
         self.wait_list_members = set()
         self.copies = {}
+        self.archived_books = {}
         self.isbn = isbn
 
     def add_copy(self, barcode):
@@ -68,6 +70,20 @@ class Book:
                 copy.cancel_reservation()
                 self.reserve_copy(copy)
     
-    # Method to remove a damaged copy
-    def remove_damaged_copy(self, copy: BookCopy):
-        copy.remove_damaged_copy()
+    # Method to archive retired copy
+    def remove_from_circulation(self, copy: BookCopy, reason: Book_State):
+        if not copy.is_valid_retire_state(reason):
+            return
+        self.update_member_before_removing_copy(copy)
+        copy.remove_from_circulation(reason)
+        self.archive_uncirculated_books(copy)
+
+    def update_member_before_removing_copy(self, copy: BookCopy):
+        if copy.is_reserved():
+            copy.reservation.remove_expired_reservation(copy)
+        if copy.is_borrowed():
+            copy.borrower.return_copy(copy)
+
+    def archive_uncirculated_books(self, copy: BookCopy):
+        self.archived_books[copy.barcode] = copy
+        del self.copies[copy.barcode]

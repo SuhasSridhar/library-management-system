@@ -59,6 +59,28 @@ class BookCopy:
         self.reservation = None
         self.reservation_due = None
         self.state = Book_State.AVAILABLE
+
+    def is_valid_retire_state(self, reason: Book_State) -> bool:
+        if reason == Book_State.REMOVED or reason == Book_State.LOST or reason == Book_State.DAMAGED:
+            return True
+        return False
     
-    def remove_damaged_copy(self):
-        self.state = Book_State.REMOVED
+    def remove_from_circulation(self, reason: Book_State):
+        self.state = reason
+        self.reset_state()
+
+    def is_reserved(self) -> bool:
+        if self.reservation is not None:
+            return True
+        return False
+
+    def is_borrowed(self) -> bool:
+        if self.borrower is not None:
+            return True
+        return False
+
+    def reset_state(self):
+        self.borrower = None
+        self.due_date = None
+        self.reservation = None
+        self.reservation_due = None

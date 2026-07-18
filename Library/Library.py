@@ -4,6 +4,7 @@
 # Coordinates high-level workflows such as checkout and return.
 
 from Members.Member import Member
+from enums import Book_State
 from Inventory.Book import Book
 from Inventory.BookCopy import BookCopy
 from enums import Waitlist_Outcomes
@@ -79,3 +80,6 @@ class Library:
         if waitlist_result == Waitlist_Outcomes.SUCCESS:
             member.add_title_to_waitlist(title)
         return waitlist_result
+
+    def remove_copy_from_circulation(self, copy: BookCopy, reason: Book_State):
+        copy.Book.remove_from_circulation(copy, reason)

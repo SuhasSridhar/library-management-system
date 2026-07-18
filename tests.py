@@ -281,3 +281,112 @@ def test_returning_overdue_book_restores_borrowing(library):
     library.return_book(copy, member)
 
     assert library.borrow("STU001", "ISBN002") is True
+
+def test_damaged_copy_cannot_be_borrowed(library):
+    book = library.find_book("ISBN001")
+    copy = book.copies["BC001"]
+
+    library.remove_copy_from_circulation(copy, Book_State.DAMAGED)
+
+    library.add_member("STU002", "Alice", "Student")
+
+    assert library.borrow("STU002", "ISBN001") is True
+    assert copy.barcode not in book.copies
+
+def test_lost_copy_cannot_be_borrowed(library):
+    book = library.find_book("ISBN001")
+    copy = book.copies["BC001"]
+
+    library.remove_copy_from_circulation(copy, Book_State.LOST)
+
+    library.add_member("STU002", "Alice", "Student")
+
+    assert library.borrow("STU002", "ISBN001") is True
+    assert copy.barcode not in book.copies
+
+def test_removed_copy_cannot_be_borrowed(library):
+    book = library.find_book("ISBN001")
+    copy = book.copies["BC001"]
+
+    library.remove_copy_from_circulation(copy, Book_State.REMOVED)
+
+    library.add_member("STU002", "Alice", "Student")
+
+    assert library.borrow("STU002", "ISBN001") is True
+    assert copy.barcode not in book.copies
+
+def test_removed_copy_moves_to_archive(library):
+    book = library.find_book("ISBN001")
+    copy = book.copies["BC001"]
+
+    library.remove_copy_from_circulation(copy, Book_State.REMOVED)
+
+    assert "BC001" not in book.copies
+    assert "BC001" in book.archived_books
+    assert book.archived_books["BC001"] == copy
+
+def test_removing_one_copy_keeps_other_copies_available(library):
+    book = library.find_book("ISBN001")
+    copy = book.copies["BC001"]
+
+    library.remove_copy_from_circulation(copy, Book_State.DAMAGED)
+
+    available = [
+        c
+        for c in book.copies.values()
+        if c.state == Book_State.AVAILABLE
+    ]
+
+    assert len(available) == 2
+
+def test_available_inventory_decreases_after_retirement(library):
+    book = library.find_book("ISBN001")
+
+    assert len(book.copies) == 3
+
+    copy = book.copies["BC001"]
+
+    library.remove_copy_from_circulation(copy, Book_State.REMOVED)
+
+    assert len(book.copies) == 2
+
+def test_borrowed_copy_removed_updates_member(library):
+    assert library.borrow("STU001", "ISBN001")
+
+    member = library.find_member("STU001")
+    copy = member.borrowed_books[0]
+
+    library.remove_copy_from_circulation(copy, Book_State.LOST)
+
+    assert len(member.borrowed_books) == 0
+    assert copy.borrower is None
+    assert copy.due_date is None
+
+def test_reserved_copy_removed_updates_member(library):
+    library.add_member("STU002", "Alice", "Student")
+    library.add_member("STU003", "Bob", "Student")
+    library.add_member("STU004", "David", "Student")
+
+    library.borrow("STU001", "ISBN001")
+    library.borrow("STU002", "ISBN001")
+    library.borrow("STU003", "ISBN001")
+
+    waiting_member = library.find_member("STU004")
+    book = library.find_book("ISBN001")
+
+    library.waitlist(book, waiting_member)
+
+    borrower = library.find_member("STU001")
+    reserved_copy = borrower.borrowed_books[0]
+
+    library.return_book(reserved_copy, borrower)
+
+    assert reserved_copy in waiting_member.active_reservations
+
+    library.remove_copy_from_circulation(
+        reserved_copy,
+        Book_State.DAMAGED
+    )
+
+    assert reserved_copy not in waiting_member.active_reservations
+    assert reserved_copy.reservation is None

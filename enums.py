@@ -5,6 +5,8 @@ class Book_State(Enum):
     BORROWED = "Borrowed"
     RESERVED = "Reserved"
     REMOVED = "Removed"
+    DAMAGED = "Damaged"
+    LOST = "Lost"
 
 class Member_Type(Enum):
     STUDENT = "Student"
