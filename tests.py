@@ -17,7 +17,7 @@ def library():
     library.add_book(
         title="Clean Architecture",
         author="Robert C. Martin",
-        ISBN="ISBN001",
+        isbn="ISBN001",
         copies=[
             "BC001",
             "BC002",
@@ -395,7 +395,7 @@ def test_find_book_by_isbn(library):
     book = library.find_book("ISBN001")
 
     assert book is not None
-    assert book.ISBN == "ISBN001"
+    assert book.isbn == "ISBN001"
 
 def test_find_unknown_book_returns_none(library):
     assert library.find_book("UNKNOWN") is None
@@ -404,7 +404,7 @@ def test_search_by_title_returns_matching_books(library):
     books = library.search_by_title("Clean Architecture")
 
     assert len(books) == 1
-    assert books[0].ISBN == "ISBN001"
+    assert books[0].isbn == "ISBN001"
 
 def test_search_by_unknown_title_returns_empty_list(library):
     books = library.search_by_title("Some Random Book")
@@ -415,7 +415,7 @@ def test_search_by_author_returns_matching_books(library):
     books = library.search_by_author("Robert C. Martin")
 
     assert len(books) == 1
-    assert books[0].ISBN == "ISBN001"
+    assert books[0].isbn == "ISBN001"
 
 def test_search_by_unknown_author_returns_empty_list(library):
     books = library.search_by_author("Unknown Author")

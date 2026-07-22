@@ -20,7 +20,6 @@ class Book:
     def add_copy(self, barcode):
         copy = BookCopy(self, barcode)
         self.copies[barcode] = copy
-        self.available_copy += 1
         return copy
 
     def check_available_copies(self) -> int:
@@ -28,7 +27,6 @@ class Book:
         for copy in self.copies.values():
             if copy.can_be_borrowed():
                 count += 1
-        self.available_copy = count
         return count
     
     # Method to fetch an available copy for the given title.

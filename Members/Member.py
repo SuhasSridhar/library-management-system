@@ -21,6 +21,12 @@ class Member:
                 return True
         return False
 
+    def has_borrowed(self, book: "Book") -> bool:
+        for copy in self.borrowed_books:
+            if copy.book == book:
+                return True
+        return False
+
     # Method to check if the member is Eligible to borrow a copy
     def can_borrow(self) -> bool:
         count = 0

@@ -24,15 +24,15 @@ class Library:
         self.members[member_id] = member
         return member
     
-    def add_book(self, title: str, author: str, ISBN: str, copies: list[str]) -> Book:
+    def add_book(self, title: str, author: str, isbn: str, copies: list[str]) -> Book:
         # Add a title and a few copies for the same
         book = Book(
             title,
             author,
-            ISBN
+            isbn
         )
 
-        self.books[ISBN] = book
+        self.books[isbn] = book
 
         for copy in copies:
             book.add_copy(copy)

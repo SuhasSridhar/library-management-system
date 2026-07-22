@@ -187,3 +187,5 @@ Current milestone:
 - ✅ V1 Complete
 - ✅ V2 Complete
 - ✅ V3 Inventory Evolution
+- ✅ V4 Search & Inventory Queries
+- ✅ V5 Enineering Review
