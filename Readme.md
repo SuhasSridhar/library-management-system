@@ -186,4 +186,4 @@ Current milestone:
 
 - ✅ V1 Complete
 - ✅ V2 Complete
-- ⏳ V3 Inventory Evolution
+- ✅ V3 Inventory Evolution

@@ -51,7 +51,7 @@ class Member:
     # Method to Update the state of the waitlist to reservation
     def reserve_copy(self, copy: "BookCopy"):
         self.active_reservations.append(copy)
-        self.waiting_lists.remove(copy.Book)
+        self.waiting_lists.remove(copy.book)
 
     # Method to update the reservation state of a copy after the Reservation is expired.
     def remove_expired_reservation(self, copy: BookCopy):

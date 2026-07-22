@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class BookCopy:
     def __init__(self, book, barcode: str):
-        self.Book = book
+        self.book = book
         self.barcode = barcode
         self.state = Book_State.AVAILABLE
         self.borrower = None

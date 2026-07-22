@@ -49,6 +49,24 @@ class Library:
             return None
         return self.books.get(isbn)
 
+    def search_by_title(self, title: str) -> list[Book]:
+        book_list = list()
+        if not title:
+            return book_list
+        for book in self.books.values():
+            if title.lower() == book.title.lower():
+                book_list.append(book)
+        return book_list
+
+    def search_by_author(self, author: str) -> list[Book]:
+        book_list = list()
+        if not author:
+            return book_list
+        for book in self.books.values():
+            if author.lower() == book.author.lower():
+                book_list.append(book)
+        return book_list
+
     def borrow(self, member_id: str, isbn: str) -> bool:    
         member = self.find_member(member_id)
         book = self.find_book(isbn)
@@ -68,7 +86,7 @@ class Library:
         if not member or not copy:
             return False
         member.return_copy(copy)
-        copy.Book.return_copy(copy)
+        copy.book.return_copy(copy)
         return True
     
     def waitlist(self, title: Book, member:Member) -> Waitlist_Outcomes:
@@ -82,4 +100,4 @@ class Library:
         return waitlist_result
 
     def remove_copy_from_circulation(self, copy: BookCopy, reason: Book_State):
-        copy.Book.remove_from_circulation(copy, reason)
+        copy.book.remove_from_circulation(copy, reason)

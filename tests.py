@@ -390,3 +390,84 @@ def test_reserved_copy_removed_updates_member(library):
 
     assert reserved_copy not in waiting_member.active_reservations
     assert reserved_copy.reservation is None
+
+def test_find_book_by_isbn(library):
+    book = library.find_book("ISBN001")
+
+    assert book is not None
+    assert book.ISBN == "ISBN001"
+
+def test_find_unknown_book_returns_none(library):
+    assert library.find_book("UNKNOWN") is None
+
+def test_search_by_title_returns_matching_books(library):
+    books = library.search_by_title("Clean Architecture")
+
+    assert len(books) == 1
+    assert books[0].ISBN == "ISBN001"
+
+def test_search_by_unknown_title_returns_empty_list(library):
+    books = library.search_by_title("Some Random Book")
+
+    assert books == []
+
+def test_search_by_author_returns_matching_books(library):
+    books = library.search_by_author("Robert C. Martin")
+
+    assert len(books) == 1
+    assert books[0].ISBN == "ISBN001"
+
+def test_search_by_unknown_author_returns_empty_list(library):
+    books = library.search_by_author("Unknown Author")
+
+    assert books == []
+
+def test_search_returns_all_books_for_author(library):
+    library.add_book(
+        "Clean Code",
+        "Robert C. Martin",
+        "ISBN002",
+        ["BC004"]
+    )
+
+    books = library.search_by_author("Robert C. Martin")
+
+    assert len(books) == 2
+
+def test_search_returns_all_books_with_same_title(library):
+    library.add_book(
+        "Clean Architecture",
+        "Robert C. Martin",
+        "ISBN002",
+        ["BC004"]
+    )
+
+    books = library.search_by_title("Clean Architecture")
+
+    assert len(books) == 2
+
+def test_search_by_title_is_case_insensitive(library):
+    books = library.search_by_title("clean architecture")
+
+    assert len(books) == 1
+
+def test_available_copy_count_updates_after_checkout(library):
+    book = library.find_book("ISBN001")
+
+    assert book.check_available_copies() == 3
+
+    library.borrow("STU001", "ISBN001")
+
+    assert book.check_available_copies() == 2
+
+def test_available_copy_count_updates_after_return(library):
+    book = library.find_book("ISBN001")
+
+    library.borrow("STU001", "ISBN001")
+
+    member = library.find_member("STU001")
+    copy = member.borrowed_books[0]
+
+    library.return_book(copy, member)
+
+    assert book.check_available_copies() == 3

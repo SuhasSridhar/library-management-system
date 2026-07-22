@@ -1,5 +1,5 @@
 # Responsibility : Biblographic data, and manage the inventory of it's physical copies.
-from enums import Book_State
+from enums import Book_State, Member_Type
 from .BookCopy import BookCopy
 from datetime import date, timedelta
 from Members.Member import Member
@@ -8,18 +8,28 @@ from collections import deque
 
 class Book:
     def __init__ (self, title, author, isbn):
-        self.Book = title
+        self.title = title
         self.author = author
         self.waiting_list = deque()
         self.wait_list_members = set()
         self.copies = {}
         self.archived_books = {}
+        self.available_copy = 0
         self.isbn = isbn
 
     def add_copy(self, barcode):
         copy = BookCopy(self, barcode)
         self.copies[barcode] = copy
+        self.available_copy += 1
         return copy
+
+    def check_available_copies(self) -> int:
+        count = 0
+        for copy in self.copies.values():
+            if copy.can_be_borrowed():
+                count += 1
+        self.available_copy = count
+        return count
     
     # Method to fetch an available copy for the given title.
     def get_available_copy(self) -> BookCopy:
@@ -42,7 +52,10 @@ class Book:
     def add_member_to_waitlist(self, member: Member) -> Waitlist_Outcomes:
         if member.member_id in self.wait_list_members:
             return Waitlist_Outcomes.ALREADY_WAITING
-        self.waiting_list.append(member)
+        if member.member_type == Member_Type.FACULTY:
+            self.wait_list.appendleft(member)
+        else :
+            self.waiting_list.append(member)
         self.wait_list_members.add(member.member_id)
         return Waitlist_Outcomes.SUCCESS
     
