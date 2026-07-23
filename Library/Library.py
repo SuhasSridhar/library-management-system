@@ -8,11 +8,12 @@ from enums import Book_State
 from Inventory.Book import Book
 from Inventory.BookCopy import BookCopy
 from enums import Waitlist_Outcomes
+from repositories import MemberRepository, BookRepository
 
 class Library:
-    def __init__(self):
-        self.members = {}
-        self.books = {}
+    def __init__(self, member_repo: MemberRepository, books_repo: BookRepository):
+        self.member_repository = member_repo
+        self.book_repository = books_repo
 
     def add_member(self, member_id: str, name: str, member_type: str) -> str:
         # Add students
@@ -21,7 +22,7 @@ class Library:
             name,
             member_type
         )
-        self.members[member_id] = member
+        self.member_repository.add_member(member)
         return member
     
     def add_book(self, title: str, author: str, isbn: str, copies: list[str]) -> Book:
@@ -32,39 +33,35 @@ class Library:
             isbn
         )
 
-        self.books[isbn] = book
-
         for copy in copies:
             book.add_copy(copy)
+
+        self.book_repository.add_book(book)
 
         return book
     
     def find_member(self, member_id: str) -> Member:
         if not member_id:
             return None
-        return self.members.get(member_id)
+        return self.member_repository.get_member(member_id)
     
     def find_book(self, isbn: str) -> Book:
         if not isbn:
             return None
-        return self.books.get(isbn)
+        return self.book_repository.get_book(isbn)
 
     def search_by_title(self, title: str) -> list[Book]:
         book_list = list()
         if not title:
             return book_list
-        for book in self.books.values():
-            if title.lower() == book.title.lower():
-                book_list.append(book)
+        book_list = self.book_repository.search_by_title(title)
         return book_list
 
     def search_by_author(self, author: str) -> list[Book]:
         book_list = list()
         if not author:
             return book_list
-        for book in self.books.values():
-            if author.lower() == book.author.lower():
-                book_list.append(book)
+        book_list = self.book_repository.search_by_author(author)
         return book_list
 
     def borrow(self, member_id: str, isbn: str) -> bool:    
@@ -101,3 +98,8 @@ class Library:
 
     def remove_copy_from_circulation(self, copy: BookCopy, reason: Book_State):
         copy.book.remove_from_circulation(copy, reason)
+
+    def remove_member(self, member_id: str):
+        if not member_id:
+            return
+        return self.member_repository.remove_member(member_id)
