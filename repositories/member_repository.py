@@ -1,5 +1,6 @@
 from Members.Member import Member
 
+
 class MemberRepository:
     def __init__(self):
         self.members = {}

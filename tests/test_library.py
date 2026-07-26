@@ -1,12 +1,16 @@
 import pytest
 
-from Library.Library import Library
+from repositories import BookRepository
+from repositories import MemberRepository
 from enums import Book_State
+from Library.Library import Library
 
 
 @pytest.fixture
 def library():
-    library = Library()
+    member_repo = MemberRepository()
+    books_repo = BookRepository()
+    library = Library(member_repo, books_repo)
 
     library.add_member(
         member_id="STU001",
@@ -211,6 +215,7 @@ def test_returned_copy_reserved_for_waiting_member(library):
     assert book not in waiting_member.waiting_lists
 
 from datetime import date, timedelta
+
 
 def test_expired_reservation_reassigned(library):
     library.add_member("STU002", "Alice", "Student")

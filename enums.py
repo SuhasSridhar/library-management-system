@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Book_State(Enum):
     AVAILABLE = "Available"
     BORROWED = "Borrowed"

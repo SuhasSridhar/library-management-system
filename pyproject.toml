@@ -1,0 +1,39 @@
+[project]
+name = "library-management-system"
+version = "0.6.5"
+description = "Practise project to understand OOD, OOPs, SOLID and PROD ecosystem"
+readme = "README.md"
+keywords = [
+    "library-management",
+    "object-oriented-design",
+    "solid",
+    "python",
+    "system-design"
+]
+requires-python = ">=3.10"
+
+[[project.maintainers]]
+name = "Suhas"
+email = "Shreeharisuhas187@gmail.com"
+
+[project.license]
+file = "LICENSE.txt"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.12",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+
+[tool.ruff.lint]
+ignore = [
+    "DTZ011",
+    "TC004",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

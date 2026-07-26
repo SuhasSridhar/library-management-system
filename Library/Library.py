@@ -3,12 +3,12 @@
 # Owns the catalog of books and the registered members.
 # Coordinates high-level workflows such as checkout and return.
 
-from Members.Member import Member
-from enums import Book_State
+from enums import Book_State, Waitlist_Outcomes
 from Inventory.Book import Book
 from Inventory.BookCopy import BookCopy
-from enums import Waitlist_Outcomes
-from repositories import MemberRepository, BookRepository
+from Members.Member import Member
+from repositories import BookRepository, MemberRepository
+
 
 class Library:
     def __init__(self, member_repo: MemberRepository, books_repo: BookRepository):
@@ -51,14 +51,14 @@ class Library:
         return self.book_repository.get_book(isbn)
 
     def search_by_title(self, title: str) -> list[Book]:
-        book_list = list()
+        book_list = []
         if not title:
             return book_list
         book_list = self.book_repository.search_by_title(title)
         return book_list
 
     def search_by_author(self, author: str) -> list[Book]:
-        book_list = list()
+        book_list = []
         if not author:
             return book_list
         book_list = self.book_repository.search_by_author(author)

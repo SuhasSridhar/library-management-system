@@ -1,5 +1,6 @@
-from Library.Library import Library
 from enums import Member_Type
+from Library.Library import Library
+
 
 def main():
     library = Library()

@@ -123,6 +123,11 @@ library-management-system/
 │
 ├── Members/
 │   └── Member.py
+|
+├── repositories/
+│   |── __init__.py
+│   |── book_repository.py
+│   └── member_repository.py
 │
 ├── tests.py
 ├── enums.py
@@ -182,10 +187,14 @@ This repository prioritizes:
 
 Current milestone:
 
-**Phase 1 — In Progress**
+**Phase 1 — Complete**
 
 - ✅ V1 Complete
 - ✅ V2 Complete
 - ✅ V3 Inventory Evolution
 - ✅ V4 Search & Inventory Queries
 - ✅ V5 Enineering Review
+
+**Phase 2 — In Progress**
+- Repository interfaces Complete
+- In-memory Repository Complete

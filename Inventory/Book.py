@@ -1,10 +1,12 @@
 # Responsibility : Biblographic data, and manage the inventory of it's physical copies.
-from enums import Book_State, Member_Type
-from .BookCopy import BookCopy
-from datetime import date, timedelta
-from Members.Member import Member
-from enums import Waitlist_Outcomes
 from collections import deque
+from datetime import datetime, timedelta, timezone
+
+from enums import Book_State, Member_Type, Waitlist_Outcomes
+from Members.Member import Member
+
+from .BookCopy import BookCopy
+
 
 class Book:
     def __init__ (self, title, author, isbn):
@@ -34,14 +36,13 @@ class Book:
         for copy in self.copies.values():
             if copy.can_be_borrowed():
                 return copy
-        return None
     
     # Method to let a member borrow a copy of the title.
     def borrow_copy(self, member: Member) -> BookCopy:
         copy = self.get_available_copy()
         if copy is None:
             return None
-        today = date.today()
+        today = datetime.now(timezone.utc).date()
         due_date = today + timedelta(days=10)
         copy.borrow_copy(member, due_date)
         return copy

@@ -1,9 +1,9 @@
-from typing import TYPE_CHECKING
 from datetime import date
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from Inventory.BookCopy import BookCopy
     from Inventory.Book import Book
+    from Inventory.BookCopy import BookCopy
 
 class Member:
     def __init__(self, member_id: str, name: str, member_type: str):
