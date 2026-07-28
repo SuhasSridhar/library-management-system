@@ -1,5 +1,5 @@
 import pytest
-
+from datetime import date, timedelta
 from repositories import BookRepository
 from repositories import MemberRepository
 from enums import Book_State
@@ -7,7 +7,7 @@ from Library.Library import Library
 
 
 @pytest.fixture
-def library():
+def library() -> Library:
     member_repo = MemberRepository()
     books_repo = BookRepository()
     library = Library(member_repo, books_repo)
@@ -32,7 +32,7 @@ def library():
     return library
 
 
-def test_successful_checkout(library):
+def test_successful_checkout(library: Library) -> None:
     success = library.borrow("STU001", "ISBN001")
 
     assert success is True
@@ -57,15 +57,15 @@ def test_successful_checkout(library):
     assert len(available) == 2
 
 
-def test_unknown_member_cannot_checkout(library):
+def test_unknown_member_cannot_checkout(library: Library) -> None:
     assert library.borrow("UNKNOWN", "ISBN001") is False
 
 
-def test_unknown_book_cannot_checkout(library):
+def test_unknown_book_cannot_checkout(library: Library) -> None:
     assert library.borrow("STU001", "UNKNOWN") is False
 
 
-def test_member_cannot_borrow_same_title_twice(library):
+def test_member_cannot_borrow_same_title_twice(library: Library) -> None:
     assert library.borrow("STU001", "ISBN001") is True
 
     assert library.borrow("STU001", "ISBN001") is False
@@ -75,7 +75,7 @@ def test_member_cannot_borrow_same_title_twice(library):
     assert len(member.borrowed_books) == 1
 
 
-def test_member_cannot_exceed_limit(library):
+def test_member_cannot_exceed_limit(library: Library) -> None:
     library.add_book(
         "Book2",
         "Author",
@@ -108,7 +108,7 @@ def test_member_cannot_exceed_limit(library):
     assert len(member.borrowed_books) == 3
 
 
-def test_no_available_copy(library):
+def test_no_available_copy(library: Library) -> None:
     library.add_member(
         "STU002",
         "Alice",
@@ -134,7 +134,7 @@ def test_no_available_copy(library):
     assert library.borrow("STU004", "ISBN001") is False
 
 
-def test_return_book(library):
+def test_return_book(library: Library) -> None:
     library.borrow("STU001", "ISBN001")
 
     member = library.find_member("STU001")
@@ -149,13 +149,13 @@ def test_return_book(library):
     assert copy.due_date is None
 
 
-def test_return_invalid_arguments(library):
+def test_return_invalid_arguments(library: Library) -> None:
     member = library.find_member("STU001")
 
     assert library.return_book(None, member) is False
     assert library.return_book(None, None) is False
 
-def test_member_can_join_waitlist(library):
+def test_member_can_join_waitlist(library: Library) -> None:
     library.add_member("STU002", "Alice", "Student")
     library.add_member("STU003", "Bob", "Student")
     library.add_member("STU004", "David", "Student")
@@ -173,7 +173,7 @@ def test_member_can_join_waitlist(library):
     assert member.waiting_lists == [book]
     assert len(book.waiting_list) == 1
 
-def test_member_cannot_join_waitlist_twice(library):
+def test_member_cannot_join_waitlist_twice(library: Library) -> None:
     library.add_member("STU002", "Alice", "Student")
     library.add_member("STU003", "Bob", "Student")
     library.add_member("STU004", "David", "Student")
@@ -190,7 +190,7 @@ def test_member_cannot_join_waitlist_twice(library):
 
     assert len(book.waiting_list) == 1
 
-def test_returned_copy_reserved_for_waiting_member(library):
+def test_returned_copy_reserved_for_waiting_member(library: Library) -> None:
     library.add_member("STU002", "Alice", "Student")
     library.add_member("STU003", "Bob", "Student")
     library.add_member("STU004", "David", "Student")
@@ -214,10 +214,7 @@ def test_returned_copy_reserved_for_waiting_member(library):
     assert copy in waiting_member.active_reservations
     assert book not in waiting_member.waiting_lists
 
-from datetime import date, timedelta
-
-
-def test_expired_reservation_reassigned(library):
+def test_expired_reservation_reassigned(library: Library) -> None:
     library.add_member("STU002", "Alice", "Student")
     library.add_member("STU003", "Bob", "Student")
     library.add_member("STU004", "David", "Student")
@@ -248,7 +245,7 @@ def test_expired_reservation_reassigned(library):
     assert copy in charlie.active_reservations
     assert copy not in david.active_reservations
 
-def test_member_with_overdue_book_cannot_borrow(library):
+def test_member_with_overdue_book_cannot_borrow(library: Library) -> None:
     library.add_book(
         "Book2",
         "Author",
@@ -266,7 +263,7 @@ def test_member_with_overdue_book_cannot_borrow(library):
 
     assert library.borrow("STU001", "ISBN002") is False
 
-def test_returning_overdue_book_restores_borrowing(library):
+def test_returning_overdue_book_restores_borrowing(library: Library) -> None:
     library.add_book(
         "Book2",
         "Author",
@@ -287,7 +284,7 @@ def test_returning_overdue_book_restores_borrowing(library):
 
     assert library.borrow("STU001", "ISBN002") is True
 
-def test_damaged_copy_cannot_be_borrowed(library):
+def test_damaged_copy_cannot_be_borrowed(library: Library) -> None:
     book = library.find_book("ISBN001")
     copy = book.copies["BC001"]
 
@@ -298,7 +295,7 @@ def test_damaged_copy_cannot_be_borrowed(library):
     assert library.borrow("STU002", "ISBN001") is True
     assert copy.barcode not in book.copies
 
-def test_lost_copy_cannot_be_borrowed(library):
+def test_lost_copy_cannot_be_borrowed(library: Library) -> None:
     book = library.find_book("ISBN001")
     copy = book.copies["BC001"]
 
@@ -309,7 +306,7 @@ def test_lost_copy_cannot_be_borrowed(library):
     assert library.borrow("STU002", "ISBN001") is True
     assert copy.barcode not in book.copies
 
-def test_removed_copy_cannot_be_borrowed(library):
+def test_removed_copy_cannot_be_borrowed(library: Library) -> None:
     book = library.find_book("ISBN001")
     copy = book.copies["BC001"]
 
@@ -320,7 +317,7 @@ def test_removed_copy_cannot_be_borrowed(library):
     assert library.borrow("STU002", "ISBN001") is True
     assert copy.barcode not in book.copies
 
-def test_removed_copy_moves_to_archive(library):
+def test_removed_copy_moves_to_archive(library: Library) -> None:
     book = library.find_book("ISBN001")
     copy = book.copies["BC001"]
 
@@ -330,7 +327,7 @@ def test_removed_copy_moves_to_archive(library):
     assert "BC001" in book.archived_books
     assert book.archived_books["BC001"] == copy
 
-def test_removing_one_copy_keeps_other_copies_available(library):
+def test_removing_one_copy_keeps_other_copies_available(library: Library) -> None:
     book = library.find_book("ISBN001")
     copy = book.copies["BC001"]
 
@@ -344,7 +341,7 @@ def test_removing_one_copy_keeps_other_copies_available(library):
 
     assert len(available) == 2
 
-def test_available_inventory_decreases_after_retirement(library):
+def test_available_inventory_decreases_after_retirement(library: Library) -> None:
     book = library.find_book("ISBN001")
 
     assert len(book.copies) == 3
@@ -355,7 +352,7 @@ def test_available_inventory_decreases_after_retirement(library):
 
     assert len(book.copies) == 2
 
-def test_borrowed_copy_removed_updates_member(library):
+def test_borrowed_copy_removed_updates_member(library: Library) -> None:
     assert library.borrow("STU001", "ISBN001")
 
     member = library.find_member("STU001")
@@ -367,7 +364,7 @@ def test_borrowed_copy_removed_updates_member(library):
     assert copy.borrower is None
     assert copy.due_date is None
 
-def test_reserved_copy_removed_updates_member(library):
+def test_reserved_copy_removed_updates_member(library: Library) -> None:
     library.add_member("STU002", "Alice", "Student")
     library.add_member("STU003", "Bob", "Student")
     library.add_member("STU004", "David", "Student")
@@ -396,38 +393,38 @@ def test_reserved_copy_removed_updates_member(library):
     assert reserved_copy not in waiting_member.active_reservations
     assert reserved_copy.reservation is None
 
-def test_find_book_by_isbn(library):
+def test_find_book_by_isbn(library: Library) -> None:
     book = library.find_book("ISBN001")
 
     assert book is not None
     assert book.isbn == "ISBN001"
 
-def test_find_unknown_book_returns_none(library):
+def test_find_unknown_book_returns_none(library: Library) -> None:
     assert library.find_book("UNKNOWN") is None
 
-def test_search_by_title_returns_matching_books(library):
+def test_search_by_title_returns_matching_books(library: Library) -> None:
     books = library.search_by_title("Clean Architecture")
 
     assert len(books) == 1
     assert books[0].isbn == "ISBN001"
 
-def test_search_by_unknown_title_returns_empty_list(library):
+def test_search_by_unknown_title_returns_empty_list(library: Library) -> None:
     books = library.search_by_title("Some Random Book")
 
     assert books == []
 
-def test_search_by_author_returns_matching_books(library):
+def test_search_by_author_returns_matching_books(library: Library) -> None:
     books = library.search_by_author("Robert C. Martin")
 
     assert len(books) == 1
     assert books[0].isbn == "ISBN001"
 
-def test_search_by_unknown_author_returns_empty_list(library):
+def test_search_by_unknown_author_returns_empty_list(library: Library) -> None:
     books = library.search_by_author("Unknown Author")
 
     assert books == []
 
-def test_search_returns_all_books_for_author(library):
+def test_search_returns_all_books_for_author(library: Library) -> None:
     library.add_book(
         "Clean Code",
         "Robert C. Martin",
@@ -439,7 +436,7 @@ def test_search_returns_all_books_for_author(library):
 
     assert len(books) == 2
 
-def test_search_returns_all_books_with_same_title(library):
+def test_search_returns_all_books_with_same_title(library: Library) -> None:
     library.add_book(
         "Clean Architecture",
         "Robert C. Martin",
@@ -451,12 +448,12 @@ def test_search_returns_all_books_with_same_title(library):
 
     assert len(books) == 2
 
-def test_search_by_title_is_case_insensitive(library):
+def test_search_by_title_is_case_insensitive(library: Library) -> None:
     books = library.search_by_title("clean architecture")
 
     assert len(books) == 1
 
-def test_available_copy_count_updates_after_checkout(library):
+def test_available_copy_count_updates_after_checkout(library: Library) -> None:
     book = library.find_book("ISBN001")
 
     assert book.check_available_copies() == 3
@@ -465,7 +462,7 @@ def test_available_copy_count_updates_after_checkout(library):
 
     assert book.check_available_copies() == 2
 
-def test_available_copy_count_updates_after_return(library):
+def test_available_copy_count_updates_after_return(library: Library) -> None:
     book = library.find_book("ISBN001")
 
     library.borrow("STU001", "ISBN001")

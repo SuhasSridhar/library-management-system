@@ -129,7 +129,9 @@ library-management-system/
 │   |── book_repository.py
 │   └── member_repository.py
 │
-├── tests.py
+├── tests/
+|   └── test_library.py
+|
 ├── enums.py
 └── main.py
 ```

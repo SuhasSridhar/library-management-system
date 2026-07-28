@@ -2,10 +2,10 @@ from Inventory.Book import Book
 
 
 class BookRepository:
-    def __init__(self):
+    def __init__(self) -> None:
         self.books = {}
 
-    def add_book(self, book: Book):
+    def add_book(self, book: Book) -> Book:
         if not book:
             return
         self.books[book.isbn] = book

@@ -11,11 +11,11 @@ from repositories import BookRepository, MemberRepository
 
 
 class Library:
-    def __init__(self, member_repo: MemberRepository, books_repo: BookRepository):
+    def __init__(self, member_repo: MemberRepository, books_repo: BookRepository) -> None:
         self.member_repository = member_repo
         self.book_repository = books_repo
 
-    def add_member(self, member_id: str, name: str, member_type: str) -> str:
+    def add_member(self, member_id: str, name: str, member_type: str) -> Member:
         # Add students
         member = Member(
             member_id,
@@ -96,10 +96,10 @@ class Library:
             member.add_title_to_waitlist(title)
         return waitlist_result
 
-    def remove_copy_from_circulation(self, copy: BookCopy, reason: Book_State):
+    def remove_copy_from_circulation(self, copy: BookCopy, reason: Book_State) -> None:
         copy.book.remove_from_circulation(copy, reason)
 
-    def remove_member(self, member_id: str):
+    def remove_member(self, member_id: str) -> None:
         if not member_id:
             return
         return self.member_repository.remove_member(member_id)

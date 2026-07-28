@@ -8,14 +8,14 @@ if TYPE_CHECKING:
     from Members.Member import Member
 
 class BookCopy:
-    def __init__(self, book, barcode: str):
+    def __init__(self, book, barcode: str) -> None:
         self.book = book
         self.barcode = barcode
         self.state = Book_State.AVAILABLE
-        self.borrower = None
-        self.due_date = None
-        self.reservation = None
-        self.reservation_due = None
+        self.borrower: Member | None = None
+        self.due_date: date | None = None
+        self.reservation: Member | None = None
+        self.reservation_due: date | None = None
 
     # Method to check if the copy is availble to be borrowed.
     def can_be_borrowed(self) -> bool:
@@ -36,7 +36,7 @@ class BookCopy:
         self.due_date = None
     
     # Method to process the state of a Copy that is to be Reserved for a Waitlist member.
-    def reserve_copy(self, member: Member):
+    def reserve_copy(self, member: Member) -> None:
         self.borrower = None
         self.reservation = member
         today = datetime.now(timezone.utc).date()
@@ -50,7 +50,7 @@ class BookCopy:
         return self.state == Book_State.RESERVED and self.reservation_due < today
     
     # Method to Update the State of Expired Reservations
-    def cancel_reservation(self):
+    def cancel_reservation(self) -> None:
         self.reservation = None
         self.reservation_due = None
         self.state = Book_State.AVAILABLE
@@ -58,7 +58,7 @@ class BookCopy:
     def is_valid_retire_state(self, reason: Book_State) -> bool:
         return reason == Book_State.REMOVED or reason == Book_State.LOST or reason == Book_State.DAMAGED
     
-    def remove_from_circulation(self, reason: Book_State):
+    def remove_from_circulation(self, reason: Book_State) -> None:
         self.state = reason
         self.reset_state()
 
@@ -68,7 +68,7 @@ class BookCopy:
     def is_borrowed(self) -> bool:
         return self.borrower is not None
 
-    def reset_state(self):
+    def reset_state(self) -> None:
         self.borrower = None
         self.due_date = None
         self.reservation = None

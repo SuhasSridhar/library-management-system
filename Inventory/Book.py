@@ -9,7 +9,7 @@ from .BookCopy import BookCopy
 
 
 class Book:
-    def __init__ (self, title, author, isbn):
+    def __init__ (self, title, author, isbn) -> None:
         self.title = title
         self.author = author
         self.waiting_list = deque()
@@ -19,7 +19,7 @@ class Book:
         self.available_copy = 0
         self.isbn = isbn
 
-    def add_copy(self, barcode):
+    def add_copy(self, barcode: str) -> BookCopy:
         copy = BookCopy(self, barcode)
         self.copies[barcode] = copy
         return copy
@@ -59,7 +59,7 @@ class Book:
         return Waitlist_Outcomes.SUCCESS
     
     # Method to reserve a copy for the member a top of the waiting list as a copy for the title becomes available.
-    def reserve_copy(self, copy: BookCopy):
+    def reserve_copy(self, copy: BookCopy) -> None:
         if not copy.can_be_borrowed():
             return
         if len(self.waiting_list) > 0:
@@ -69,12 +69,12 @@ class Book:
             waiting_member.reserve_copy(copy)
 
     # Method to return a copy and reserve the newly available copy for waiting member atop of the waiting list.
-    def return_copy(self, copy: BookCopy):
+    def return_copy(self, copy: BookCopy) -> None:
         copy.return_copy()
         self.reserve_copy(copy)
     
     # Method to process any reservation Expiry and reassign the Reservation if any waiting members are present.
-    def expired_validation(self):
+    def expired_validation(self) -> None:
         for copy in self.copies.values():
             if copy.is_reservation_expired():
                 reserved_member = copy.reservation
@@ -83,19 +83,19 @@ class Book:
                 self.reserve_copy(copy)
     
     # Method to archive retired copy
-    def remove_from_circulation(self, copy: BookCopy, reason: Book_State):
+    def remove_from_circulation(self, copy: BookCopy, reason: Book_State) -> None:
         if not copy.is_valid_retire_state(reason):
             return
         self.update_member_before_removing_copy(copy)
         copy.remove_from_circulation(reason)
         self.archive_uncirculated_books(copy)
 
-    def update_member_before_removing_copy(self, copy: BookCopy):
+    def update_member_before_removing_copy(self, copy: BookCopy) -> None:
         if copy.is_reserved():
             copy.reservation.remove_expired_reservation(copy)
         if copy.is_borrowed():
             copy.borrower.return_copy(copy)
 
-    def archive_uncirculated_books(self, copy: BookCopy):
+    def archive_uncirculated_books(self, copy: BookCopy) -> None:
         self.archived_books[copy.barcode] = copy
         del self.copies[copy.barcode]

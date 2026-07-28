@@ -37,3 +37,11 @@ ignore = [
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
