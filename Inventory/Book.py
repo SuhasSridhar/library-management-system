@@ -9,13 +9,13 @@ from .BookCopy import BookCopy
 
 
 class Book:
-    def __init__ (self, title, author, isbn) -> None:
+    def __init__ (self, title: str, author: str, isbn: str) -> None:
         self.title = title
         self.author = author
-        self.waiting_list = deque()
-        self.wait_list_members = set()
-        self.copies = {}
-        self.archived_books = {}
+        self.waiting_list: deque[Member] = deque()
+        self.wait_list_members: set[str] = set()
+        self.copies: dict[str, BookCopy] = {}
+        self.archived_books: dict[str, BookCopy] = {}
         self.available_copy = 0
         self.isbn = isbn
 
@@ -32,13 +32,14 @@ class Book:
         return count
     
     # Method to fetch an available copy for the given title.
-    def get_available_copy(self) -> BookCopy:
+    def get_available_copy(self) -> BookCopy | None:
         for copy in self.copies.values():
             if copy.can_be_borrowed():
                 return copy
+        return None
     
     # Method to let a member borrow a copy of the title.
-    def borrow_copy(self, member: Member) -> BookCopy:
+    def borrow_copy(self, member: Member) -> BookCopy | None:
         copy = self.get_available_copy()
         if copy is None:
             return None
@@ -52,7 +53,7 @@ class Book:
         if member.member_id in self.wait_list_members:
             return Waitlist_Outcomes.ALREADY_WAITING
         if member.member_type == Member_Type.FACULTY:
-            self.wait_list.appendleft(member)
+            self.waiting_list.appendleft(member)
         else :
             self.waiting_list.append(member)
         self.wait_list_members.add(member.member_id)
@@ -78,6 +79,8 @@ class Book:
         for copy in self.copies.values():
             if copy.is_reservation_expired():
                 reserved_member = copy.reservation
+                if reserved_member is None:
+                    return None
                 reserved_member.remove_expired_reservation(copy)
                 copy.cancel_reservation()
                 self.reserve_copy(copy)
@@ -92,8 +95,10 @@ class Book:
 
     def update_member_before_removing_copy(self, copy: BookCopy) -> None:
         if copy.is_reserved():
+            if copy.reservation is None:
+                return None
             copy.reservation.remove_expired_reservation(copy)
-        if copy.is_borrowed():
+        if copy.is_borrowed() and copy.borrower is not None:
             copy.borrower.return_copy(copy)
 
     def archive_uncirculated_books(self, copy: BookCopy) -> None:

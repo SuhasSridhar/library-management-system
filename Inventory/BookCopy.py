@@ -6,9 +6,10 @@ from enums import Book_State
 
 if TYPE_CHECKING:
     from Members.Member import Member
+    from .Book import Book
 
 class BookCopy:
-    def __init__(self, book, barcode: str) -> None:
+    def __init__(self, book: Book, barcode: str) -> None:
         self.book = book
         self.barcode = barcode
         self.state = Book_State.AVAILABLE
@@ -47,7 +48,7 @@ class BookCopy:
     # Method to check if the copy has expired reservation
     def is_reservation_expired(self) -> bool:
         today = datetime.now(timezone.utc).date()
-        return self.state == Book_State.RESERVED and self.reservation_due < today
+        return self.state == Book_State.RESERVED and self.reservation_due is not None and self.reservation_due < today
     
     # Method to Update the State of Expired Reservations
     def cancel_reservation(self) -> None:

@@ -13,12 +13,12 @@ class Member:
         self.member_type = member_type
         self.borrowed_books: list["BookCopy"] = []
         self.active_reservations: list["BookCopy"] = []
-        self.waiting_lists: list["BookCopy"] = []
+        self.waiting_lists: list["Book"] = []
 
     def has_overdue_copies(self) -> bool:
         today = date.today()
         for copy in self.borrowed_books:
-            if copy.due_date < today:
+            if copy.due_date is not None and copy.due_date < today:
                 return True
         return False
 
