@@ -171,6 +171,7 @@ Library
         │
         └── Member ID → Member
 
+```
 
 ---
 
