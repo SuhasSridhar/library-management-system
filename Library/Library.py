@@ -7,7 +7,7 @@ from enums import Book_State, Waitlist_Outcomes, Member_Type
 from Inventory.Book import Book
 from Inventory.BookCopy import BookCopy
 from Members.Member import Member
-from repositories import BookRepository, MemberRepository
+from repositories.interfaces import BookRepository, MemberRepository
 
 
 class Library:

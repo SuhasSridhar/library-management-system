@@ -1,15 +1,15 @@
 import pytest
 from datetime import date, timedelta
-from repositories import BookRepository
-from repositories import MemberRepository
+from repositories.in_memory.member_repository import InMemoryMemberRepository
+from repositories.in_memory.book_repository import InMemoryBookRepository
 from enums import Book_State, Member_Type
 from Library.Library import Library
 
 
 @pytest.fixture
 def library() -> Library:
-    member_repo = MemberRepository()
-    books_repo = BookRepository()
+    member_repo = InMemoryMemberRepository()
+    books_repo = InMemoryBookRepository()
     library = Library(member_repo, books_repo)
 
     library.add_member(

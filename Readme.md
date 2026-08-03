@@ -124,10 +124,26 @@ library-management-system/
 ├── Members/
 │   └── Member.py
 |
+├── database/
+│   ├── __init__.py
+│   └── sqlite_database.py
+│
 ├── repositories/
-│   |── __init__.py
-│   |── book_repository.py
-│   └── member_repository.py
+│   │
+│   ├── interfaces/
+│   │   ├── __init__.py
+│   │   ├── book_repository.py
+│   │   └── member_repository.py
+│   │
+│   ├── in_memory/
+│   │   ├── __init__.py
+│   │   ├── book_repository.py
+│   │   └── member_repository.py
+│   │
+│   └── sqlite/
+│       ├── __init__.py
+│       ├── book_repository.py
+│       └── member_repository.py
 │
 ├── tests/
 |   └── test_library.py
@@ -154,7 +170,7 @@ Library
 └── Members
         │
         └── Member ID → Member
-```
+
 
 ---
 
@@ -200,3 +216,4 @@ Current milestone:
 **Phase 2 — In Progress**
 - Repository interfaces Complete
 - In-memory Repository Complete
+- SQLite Implementation
