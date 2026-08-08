@@ -133,17 +133,23 @@ library-management-system/
 │   ├── interfaces/
 │   │   ├── __init__.py
 │   │   ├── book_repository.py
+│   │   ├── book_copy_repository.py
+│   │   ├── waitlist_repository.py
 │   │   └── member_repository.py
 │   │
 │   ├── in_memory/
 │   │   ├── __init__.py
 │   │   ├── book_repository.py
+│   │   ├── book_copy_repository.py
+│   │   ├── waitlist_repository.py
 │   │   └── member_repository.py
 │   │
 │   └── sqlite/
 │       ├── __init__.py
-│       ├── book_repository.py
-│       └── member_repository.py
+│       ├── sqlite_book_repository.py
+│       ├── sqlite_book_copy_repository.py
+│       ├── sqlite_waitlist_repository.py
+│       └── sqlite_member_repository.py
 │
 ├── tests/
 |   └── test_library.py
