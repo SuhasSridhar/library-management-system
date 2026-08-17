@@ -42,7 +42,7 @@ class Library:
 
         # Method to add book copy 
         for copy in copies:
-            book_copy = BookCopy(isbn, copy)
+            book_copy = BookCopy(isbn, copy, Book_State.AVAILABLE)
             self.book_copy_repository.add_copy(book_copy)
 
         self.book_repository.add_book(book)
@@ -94,9 +94,7 @@ class Library:
         waiting_member_id = self.waitlist_repository.get_next_eligible_member(copy.isbn)
         if not waiting_member_id:
             return True
-        if self.book_copy_repository.reserve_copy_for_waiting_member(copy.copy_id, waiting_member_id):
-            return True
-        return False
+        return self.book_copy_repository.reserve_copy_for_waiting_member(copy.copy_id, waiting_member_id)
 
     # Method to add a member to Waitlist.
     def waitlist(self, title: Book, member: Member) -> Waitlist_Outcomes:

@@ -35,6 +35,7 @@ line-length = 88
 ignore = [
     "DTZ011",
     "TC004",
+    "N999",
 ]
 
 [tool.pytest.ini_options]
