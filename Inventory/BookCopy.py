@@ -1,6 +1,8 @@
 # Resposibility : Hold the State of each physical copy and ability to mutate it's state.
 from datetime import date
+
 from enums import Book_State
+
 
 class BookCopy:
     def __init__(self, isbn: str, barcode: str) -> None:

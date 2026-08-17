@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from Members.Member import Member
+
 
 class MemberRepository(ABC):
 

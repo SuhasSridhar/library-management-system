@@ -1,6 +1,7 @@
 from Members.Member import Member
 from repositories.interfaces import MemberRepository
 
+
 class InMemoryMemberRepository(MemberRepository):
     def __init__(self) -> None:
         self.members: dict[str, Member] = {}

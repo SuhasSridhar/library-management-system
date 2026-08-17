@@ -113,22 +113,33 @@ The emphasis of this repository is evolving the software through changing busine
 
 ```
 library-management-system/
-
+|
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+|
 ├── Inventory/
+│   ├── __init__.py
 │   ├── Book.py
-│   └── BookCopy.py
+│   ├── BookCopy.py
+│   └── WaitList.py
 │
 ├── Library/
+│   ├── __init__.py
 │   └── Library.py
 │
 ├── Members/
+│   ├── __init__.py
 │   └── Member.py
 |
 ├── database/
 │   ├── __init__.py
+│   ├── library.py
 │   └── sqlite_database.py
 │
 ├── repositories/
+│   │
+│   ├── __init__.py
 │   │
 │   ├── interfaces/
 │   │   ├── __init__.py
@@ -223,4 +234,5 @@ Current milestone:
 **Phase 2 — In Progress**
 - Repository interfaces Complete
 - In-memory Repository Complete
+- CI added for quality checks
 - SQLite Implementation

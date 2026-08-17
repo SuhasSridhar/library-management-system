@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from Inventory.BookCopy import BookCopy
+
 from enums import Book_State
+from Inventory.BookCopy import BookCopy
+
 
 class BookCopyRepository(ABC):
 

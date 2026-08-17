@@ -3,11 +3,17 @@
 # Owns the catalog of books and the registered members.
 # Coordinates high-level workflows such as checkout and return.
 
-from enums import Book_State, Waitlist_Outcomes, Member_Type
+from enums import Book_State, Member_Type, Waitlist_Outcomes
 from Inventory.Book import Book
 from Inventory.BookCopy import BookCopy
 from Members.Member import Member
-from repositories.interfaces import BookRepository, MemberRepository, BookCopyRepository, WaitListRepository
+from repositories.interfaces import (
+    BookCopyRepository,
+    BookRepository,
+    MemberRepository,
+    WaitListRepository,
+)
+
 
 class Library:
     def __init__(self, member_repo: MemberRepository, books_repo: BookRepository, books_copy_repo: BookCopyRepository, waitlist_repo: WaitListRepository) -> None:

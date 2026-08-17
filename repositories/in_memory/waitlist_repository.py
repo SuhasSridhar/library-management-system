@@ -1,9 +1,10 @@
 from collections import deque
 
+from enums import Member_Type, Waitlist_Outcomes
 from Inventory.WaitList import WaitList
 from Members.Member import Member
 from repositories.interfaces import WaitListRepository
-from enums import Member_Type, Waitlist_Outcomes
+
 
 class InMemoryWaitListRepository(WaitListRepository):
 

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from Members.Member import Member
+
 from enums import Waitlist_Outcomes
+from Members.Member import Member
+
 
 class WaitListRepository(ABC):
 

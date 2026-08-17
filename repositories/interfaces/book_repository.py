@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from Inventory.Book import Book
+
 
 class BookRepository(ABC):
 

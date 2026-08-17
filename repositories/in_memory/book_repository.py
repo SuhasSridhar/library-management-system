@@ -1,6 +1,7 @@
 from Inventory.Book import Book
 from repositories.interfaces import BookRepository
 
+
 class InMemoryBookRepository(BookRepository):
     def __init__(self) -> None:
         self.books: dict[str, Book] = {}

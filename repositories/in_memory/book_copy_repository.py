@@ -1,8 +1,9 @@
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
+from enums import Book_State
 from Inventory.BookCopy import BookCopy
 from repositories.interfaces import BookCopyRepository
-from enums import Book_State
+
 
 class InMemoryBookCopyRepository(BookCopyRepository):
     def __init__(self) -> None:
@@ -16,7 +17,7 @@ class InMemoryBookCopyRepository(BookCopyRepository):
     def eligible_to_borrow(self, member_id: str, isbn: str) -> bool:
         # Check if member has any expired borrows
         count = 0
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(UTC).date()
         for copy in self.book_copies.values():
             if copy.borrower_member_id == member_id:
                 if copy.due_date is not None and copy.due_date < today:
@@ -34,7 +35,7 @@ class InMemoryBookCopyRepository(BookCopyRepository):
 
     def borrow_copy(self, member_id: str, copy: BookCopy) -> bool:
         # Check if the member is eligibile to borrow a copy.
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(UTC).date()
         due_date = today + timedelta(days=10)
         copy.borrower_member_id = member_id
         copy.borrowed_date = today
@@ -49,7 +50,7 @@ class InMemoryBookCopyRepository(BookCopyRepository):
     def return_copy(self, copy: BookCopy) -> None:
         returned_copy = self.book_copies.get(copy.copy_id)
         if returned_copy is None:
-            return None
+            return
         returned_copy.status = Book_State.AVAILABLE
         returned_copy.borrower_member_id = None
         returned_copy.due_date = None
@@ -63,7 +64,7 @@ class InMemoryBookCopyRepository(BookCopyRepository):
         copy = self.book_copies.get(barcode)
         if copy is None:
             return False
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(UTC).date()
         reservation_due = today + timedelta(days=1)
         copy.reservation_member_id = member_id
         copy.reservation_expiry = reservation_due
@@ -73,7 +74,7 @@ class InMemoryBookCopyRepository(BookCopyRepository):
 
     def remove_from_circulation(self, copy: BookCopy, reason: Book_State) -> None:
         if self.book_copies.get(copy.copy_id) is None:
-            return None
+            return
         copy.status = reason
         copy.borrower_member_id = None
         copy.borrowed_date = None
@@ -81,4 +82,4 @@ class InMemoryBookCopyRepository(BookCopyRepository):
         copy.reservation_member_id = None
         copy.reservation_expiry = None
         self.book_copies[copy.copy_id] = copy
-        return None
+        return
