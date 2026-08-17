@@ -7,7 +7,6 @@ from repositories.interfaces import BookCopyRepository
 
 
 class SQLiteBookCopyRepository(BookCopyRepository):
-
     def __init__(self, database: SQLiteDatabase):
         self.connection = database.get_connection()
 
@@ -52,7 +51,7 @@ class SQLiteBookCopyRepository(BookCopyRepository):
             (member_id,),
         )
         row = cursor.fetchone()
-        return row[0] < 3
+        return int(row[0]) < 2
 
     def fetch_available_copy(self, isbn: str) -> BookCopy | None:
         cursor = self.connection.cursor()

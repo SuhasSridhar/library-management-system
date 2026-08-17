@@ -7,7 +7,6 @@ from repositories.interfaces import WaitListRepository
 
 
 class SQLiteWaitListRepository(WaitListRepository):
-
     def __init__(self, database: SQLiteDatabase):
         self.connection = database.get_connection()
 
@@ -23,12 +22,7 @@ class SQLiteWaitListRepository(WaitListRepository):
             INSERT INTO WaitList(isbn, member_id, member_type, joined_at)
             VALUES(?, ?, ?, ?)
             """,
-            (
-                isbn,
-                member.member_id,
-                member.member_type.value,
-                joined_at
-            ),
+            (isbn, member.member_id, member.member_type.value, joined_at),
         )
         self.connection.commit()
         return True
@@ -48,10 +42,7 @@ class SQLiteWaitListRepository(WaitListRepository):
                 END,
                 joined_at ASC
             """,
-            (
-                isbn, 
-                Member_Type.FACULTY.value
-            )
+            (isbn, Member_Type.FACULTY.value),
         )
         row = cursor.fetchone()
 
@@ -60,7 +51,9 @@ class SQLiteWaitListRepository(WaitListRepository):
 
         return str(row[0])
 
-    def member_eligible_for_waitlist(self, member_id: str, isbn: str) -> Waitlist_Outcomes:
+    def member_eligible_for_waitlist(
+        self, member_id: str, isbn: str
+    ) -> Waitlist_Outcomes:
 
         cursor = self.connection.cursor()
         cursor.execute(
@@ -69,9 +62,7 @@ class SQLiteWaitListRepository(WaitListRepository):
             FROM WaitList
             WHERE member_id = ?
             """,
-            (
-                member_id,
-            )
+            (member_id,),
         )
 
         row = cursor.fetchone()
@@ -86,14 +77,14 @@ class SQLiteWaitListRepository(WaitListRepository):
             WHERE member_id = ? AND isbn = ?
             """,
             (
-                member_id, 
+                member_id,
                 isbn,
-            )
+            ),
         )
 
         new_row = cursor.fetchone()
 
         if new_row is not None:
             return Waitlist_Outcomes.ALREADY_WAITING
-        
+
         return Waitlist_Outcomes.SUCCESS

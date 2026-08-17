@@ -4,7 +4,6 @@ from repositories.interfaces import BookRepository
 
 
 class SQLiteBookRepository(BookRepository):
-    
     def __init__(self, database: SQLiteDatabase):
         self.connection = database.get_connection()
 
@@ -34,21 +33,15 @@ class SQLiteBookRepository(BookRepository):
             FROM Book
             WHERE isbn = ?
             """,
-            (
-                isbn,
-            )
+            (isbn,),
         )
 
         row = cursor.fetchone()
 
         if row is None:
             return None
-        
-        return Book(
-            isbn=row[0],
-            title=row[1],
-            author=row[2]
-        )
+
+        return Book(isbn=row[0], title=row[1], author=row[2])
 
     def search_by_author(self, author: str) -> list[Book]:
         book_list: list[Book] = []
@@ -60,19 +53,13 @@ class SQLiteBookRepository(BookRepository):
             FROM Book
             WHERE author = ?
             """,
-            (
-                author,
-            )
+            (author,),
         )
 
         rows = cursor.fetchall()
 
         for row in rows:
-            book_list.append(Book(
-                isbn=row[0],
-                title=row[1],
-                author=row[2]
-            ))
+            book_list.append(Book(isbn=row[0], title=row[1], author=row[2]))
 
         return book_list
 
@@ -86,18 +73,12 @@ class SQLiteBookRepository(BookRepository):
             FROM Book
             WHERE title = ?
             """,
-            (
-                title,
-            )
+            (title,),
         )
 
         rows = cursor.fetchall()
 
         for row in rows:
-            book_list.append(Book(
-                isbn=row[0],
-                title=row[1],
-                author=row[2]
-            ))
+            book_list.append(Book(isbn=row[0], title=row[1], author=row[2]))
 
         return book_list

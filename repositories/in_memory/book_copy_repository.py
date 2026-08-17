@@ -29,7 +29,11 @@ class InMemoryBookCopyRepository(BookCopyRepository):
 
     def fetch_available_copy(self, isbn: str) -> BookCopy | None:
         for copy in self.book_copies.values():
-            if copy.isbn == isbn and copy.borrower_member_id is None and copy.status == Book_State.AVAILABLE:
+            if (
+                copy.isbn == isbn
+                and copy.borrower_member_id is None
+                and copy.status == Book_State.AVAILABLE
+            ):
                 return copy
         return None
 
@@ -58,7 +62,7 @@ class InMemoryBookCopyRepository(BookCopyRepository):
         returned_copy.reservation_expiry = None
         returned_copy.borrowed_date = None
         self.book_copies[returned_copy.copy_id] = returned_copy
-        return 
+        return
 
     def reserve_copy_for_waiting_member(self, barcode: str, member_id: str) -> bool:
         copy = self.book_copies.get(barcode)

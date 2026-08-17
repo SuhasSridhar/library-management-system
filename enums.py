@@ -9,9 +9,11 @@ class Book_State(Enum):
     DAMAGED = "Damaged"
     LOST = "Lost"
 
+
 class Member_Type(Enum):
     STUDENT = "Student"
     FACULTY = "Faculty"
+
 
 class Waitlist_Outcomes(Enum):
     SUCCESS = "Success"

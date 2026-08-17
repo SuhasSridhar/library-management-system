@@ -7,19 +7,18 @@ from repositories.interfaces import WaitListRepository
 
 
 class InMemoryWaitListRepository(WaitListRepository):
-
     def __init__(self) -> None:
         self.waitlist_records: dict[str, deque[WaitList]] = {}
 
     def add_member_to_waitlist(self, isbn: str, member: Member) -> bool:
         if isbn is None or member is None:
             return False
-        waitlist = WaitList(isbn, member.member_id, member.member_type, '')
+        waitlist = WaitList(isbn, member.member_id, member.member_type, "")
         if isbn not in self.waitlist_records:
             self.waitlist_records[isbn] = deque()
         if member.member_type == Member_Type.FACULTY:
             self.waitlist_records[isbn].appendleft(waitlist)
-        else :
+        else:
             self.waitlist_records[isbn].append(waitlist)
         return True
 
@@ -30,7 +29,9 @@ class InMemoryWaitListRepository(WaitListRepository):
         waitlist_member = waitlist.popleft()
         return waitlist_member.member_id
 
-    def member_eligible_for_waitlist(self, member_id: str, isbn: str) -> Waitlist_Outcomes:
+    def member_eligible_for_waitlist(
+        self, member_id: str, isbn: str
+    ) -> Waitlist_Outcomes:
         count = 0
         for waitlist in self.waitlist_records.values():
             for rec in waitlist:

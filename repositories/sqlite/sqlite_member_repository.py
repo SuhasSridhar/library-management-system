@@ -5,7 +5,6 @@ from repositories.interfaces import MemberRepository
 
 
 class SQLiteMemberRepository(MemberRepository):
-    
     def __init__(self, database: SQLiteDatabase):
         self.connection = database.get_connection()
 
@@ -16,11 +15,7 @@ class SQLiteMemberRepository(MemberRepository):
             INSERT INTO Member(member_id, name, member_type)
             VALUES(?, ?, ?)
             """,
-            (
-                member.member_id,
-                member.name,
-                member.member_type.value
-            )
+            (member.member_id, member.name, member.member_type.value),
         )
         self.connection.commit()
 
@@ -32,7 +27,7 @@ class SQLiteMemberRepository(MemberRepository):
             FROM Member
             WHERE member_id = ?
             """,
-            (member_id, )
+            (member_id,),
         )
 
         row = cursor.fetchone()
@@ -40,12 +35,8 @@ class SQLiteMemberRepository(MemberRepository):
         if row is None:
             return None
 
-        return Member(
-            member_id = row[0],
-            name = row[1],
-            member_type = Member_Type(row[2])
-        )
-    
+        return Member(member_id=row[0], name=row[1], member_type=Member_Type(row[2]))
+
     def remove_member(self, member_id: str) -> None:
         cursor = self.connection.cursor()
         cursor.execute(
@@ -54,7 +45,7 @@ class SQLiteMemberRepository(MemberRepository):
             FROM Member 
             WHERE member_id = ?
             """,
-            (member_id)
+            (member_id),
         )
 
         self.connection.commit()
