@@ -11,6 +11,11 @@ __pycache__/
 # macOS
 .DS_Store
 
+# Local SQLite database
+*.db
+*.sqlite
+*.sqlite3
+
 # VS Code
 .vscode/
 

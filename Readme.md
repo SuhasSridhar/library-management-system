@@ -79,8 +79,7 @@ The project evolves in four phases. Each phase introduces new concepts only afte
 - Repository interfaces
 - In-memory repositories
 - SQLite implementation
-- SQLAlchemy mapping
-- Transactions
+- Persistent database schema
 
 ---
 
@@ -88,22 +87,18 @@ The project evolves in four phases. Each phase introduces new concepts only afte
 
 - FastAPI
 - DTOs
-- Validation
+- Pydantic Validation
 - Dependency Injection
-- Exception handling
+- HTTP Exception handling
 
 ---
 
-### Phase 4 — Production Infrastructure
+### Engineering Tooling
 
-- PostgreSQL
-- Redis
-- Background scheduler
-- Authentication
-- Docker
-- Logging
-- Metrics
-- CI/CD
+- Ruff
+- MyPy
+- Pytest
+- GitHub Actions CI
 
 ---
 
@@ -224,15 +219,22 @@ This repository prioritizes:
 Current milestone:
 
 **Phase 1 — Complete**
-
-- ✅ V1 Complete
-- ✅ V2 Complete
-- ✅ V3 Inventory Evolution
-- ✅ V4 Search & Inventory Queries
-- ✅ V5 Enineering Review
+- V1 Complete
+- V2 Complete
+- V3 Inventory Evolution
+- V4 Search & Inventory Queries
+- V5 Enineering Review
 
 **Phase 2 — In Progress**
 - Repository interfaces Complete
 - In-memory Repository Complete
 - CI added for quality checks
 - SQLite Implementation
+- SQLite persistence
+
+**Phase 3 — API / Application Layer**
+- FastAPI
+- Request/response DTOs
+- Pydantic validation
+- Dependency Injection
+- HTTP error handling
