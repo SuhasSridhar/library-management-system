@@ -2,17 +2,17 @@ from enum import Enum
 
 
 class Book_State(Enum):
-    AVAILABLE = "Available"
-    BORROWED = "Borrowed"
-    RESERVED = "Reserved"
-    REMOVED = "Removed"
-    DAMAGED = "Damaged"
-    LOST = "Lost"
+    AVAILABLE = "AVAILABLE"
+    BORROWED = "BORROWED"
+    RESERVED = "RESERVED"
+    REMOVED = "REMOVED"
+    DAMAGED = "DAMAGED"
+    LOST = "LOST"
 
 
 class Member_Type(Enum):
-    STUDENT = "Student"
-    FACULTY = "Faculty"
+    STUDENT = "STUDENT"
+    FACULTY = "FACULTY"
 
 
 class Waitlist_Outcomes(Enum):

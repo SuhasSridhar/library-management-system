@@ -25,6 +25,26 @@ class SQLiteBookCopyRepository(BookCopyRepository):
         )
         self.connection.commit()
 
+    def find_copy(self, copy_id: str) -> BookCopy | None:
+        cursor = self.connection.cursor()
+        cursor.execute(
+            """
+            SELECT copy_id, isbn, status
+            FROM BookCopy
+            WHERE copy_id = ?
+            """,
+            (copy_id,),
+        )
+        row = cursor.fetchone()
+        if row is None:
+            return None
+
+        return BookCopy(
+            barcode=row[0],
+            isbn=row[1],
+            status=Book_State(row[2]),
+        )
+
     def eligible_to_borrow(self, member_id: str, isbn: str) -> bool:
         cursor = self.connection.cursor()
         cursor.execute(
@@ -184,7 +204,7 @@ class SQLiteBookCopyRepository(BookCopyRepository):
 
     def remove_from_circulation(
         self,
-        copy: BookCopy,
+        copy_id: str,
         reason: Book_State,
     ) -> None:
         cursor = self.connection.cursor()
@@ -202,7 +222,7 @@ class SQLiteBookCopyRepository(BookCopyRepository):
             """,
             (
                 reason.value,
-                copy.copy_id,
+                copy_id,
             ),
         )
 

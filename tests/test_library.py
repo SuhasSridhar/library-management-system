@@ -199,8 +199,7 @@ def test_return_book_makes_copy_available(
     if member is None:
         return
     result = populated_library.return_book(
-        copy,
-        member,
+        copy.copy_id,
     )
 
     assert result is True
@@ -221,13 +220,13 @@ def test_return_book_reserves_copy_for_waiting_member(
     assert book is not None
 
     waitlist_result = populated_library.waitlist(
-        book,
-        member,
+        book.isbn,
+        member.member_id,
     )
 
     assert waitlist_result == Waitlist_Outcomes.SUCCESS
 
-    result = populated_library.return_book(copy, member)
+    result = populated_library.return_book(copy.copy_id)
 
     assert result is True
     assert copy.status == Book_State.RESERVED
@@ -241,7 +240,7 @@ def test_member_can_join_waitlist(populated_library: Library) -> None:
     assert book is not None
     assert member is not None
 
-    result = populated_library.waitlist(book, member)
+    result = populated_library.waitlist(book.isbn, member.member_id)
 
     assert result == Waitlist_Outcomes.SUCCESS
 
@@ -255,8 +254,8 @@ def test_member_cannot_join_same_waitlist_twice(
     assert book is not None
     assert member is not None
 
-    first_result = populated_library.waitlist(book, member)
-    second_result = populated_library.waitlist(book, member)
+    first_result = populated_library.waitlist(book.isbn, member.member_id)
+    second_result = populated_library.waitlist(book.isbn, member.member_id)
 
     assert first_result == Waitlist_Outcomes.SUCCESS
     assert second_result == Waitlist_Outcomes.ALREADY_WAITING
@@ -270,7 +269,7 @@ def test_remove_copy_from_circulation(
     assert copy is not None
 
     populated_library.remove_copy_from_circulation(
-        copy,
+        copy.copy_id,
         Book_State.REMOVED,
     )
 

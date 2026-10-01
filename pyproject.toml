@@ -36,6 +36,7 @@ ignore = [
     "DTZ011",
     "TC004",
     "N999",
+    "B008",
 ]
 
 [tool.pytest.ini_options]

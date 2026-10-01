@@ -14,6 +14,11 @@ class InMemoryBookCopyRepository(BookCopyRepository):
             return
         self.book_copies[copy.copy_id] = copy
 
+    def find_copy(self, copy_id: str) -> BookCopy | None:
+        if not copy_id:
+            return None
+        return self.book_copies.get(copy_id)
+
     def eligible_to_borrow(self, member_id: str, isbn: str) -> bool:
         # Check if member has any expired borrows
         count = 0
@@ -76,8 +81,9 @@ class InMemoryBookCopyRepository(BookCopyRepository):
         copy.status = Book_State.RESERVED
         return True
 
-    def remove_from_circulation(self, copy: BookCopy, reason: Book_State) -> None:
-        if self.book_copies.get(copy.copy_id) is None:
+    def remove_from_circulation(self, copy_id: str, reason: Book_State) -> None:
+        copy = self.book_copies.get(copy_id)
+        if copy is None:
             return
         copy.status = reason
         copy.borrower_member_id = None

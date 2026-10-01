@@ -38,12 +38,12 @@ class Library:
         # Add a title and a few copies for the same
         book = Book(title, author, isbn)
 
+        self.book_repository.add_book(book)
+
         # Method to add book copy
         for copy in copies:
             book_copy = BookCopy(isbn, copy, Book_State.AVAILABLE)
             self.book_copy_repository.add_copy(book_copy)
-
-        self.book_repository.add_book(book)
 
         return book
 
@@ -87,8 +87,14 @@ class Library:
             member_id, copy
         )  # borrow happens in the copy, Book copy holds the copy and it does have an ISBN stored as a field.
 
-    def return_book(self, copy: BookCopy, member: Member) -> bool:
-        if not member or not copy:
+    def find_copy(self, copy_id: str) -> BookCopy | None:
+        if not copy_id:
+            return None
+        return self.book_copy_repository.find_copy(copy_id)
+
+    def return_book(self, copy_id: str) -> bool:
+        copy = self.find_copy(copy_id)
+        if not copy:
             return False
         self.book_copy_repository.return_copy(copy)
         waiting_member_id = self.waitlist_repository.get_next_eligible_member(copy.isbn)
@@ -99,15 +105,16 @@ class Library:
         )
 
     # Method to add a member to Waitlist.
-    def waitlist(self, title: Book, member: Member) -> Waitlist_Outcomes:
-        if not title or not member:
+    def waitlist(self, isbn: str, member_id: str) -> Waitlist_Outcomes:
+        member = self.find_member(member_id)
+        if not isbn or not member:
             return Waitlist_Outcomes.ERROR
         waitlist_outcome = self.waitlist_repository.member_eligible_for_waitlist(
-            member.member_id, title.isbn
+            member.member_id, isbn
         )
         if waitlist_outcome == Waitlist_Outcomes.SUCCESS:
             waitlist_result = self.waitlist_repository.add_member_to_waitlist(
-                title.isbn, member
+                isbn, member
             )
             return (
                 Waitlist_Outcomes.SUCCESS
@@ -116,8 +123,8 @@ class Library:
             )
         return waitlist_outcome
 
-    def remove_copy_from_circulation(self, copy: BookCopy, reason: Book_State) -> None:
-        self.book_copy_repository.remove_from_circulation(copy, reason)
+    def remove_copy_from_circulation(self, copy_id: str, reason: Book_State) -> None:
+        self.book_copy_repository.remove_from_circulation(copy_id, reason)
 
     def remove_member(self, member_id: str) -> None:
         if not member_id:
