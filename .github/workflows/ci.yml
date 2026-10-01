@@ -30,7 +30,7 @@ jobs:
           uv run python -c "import sys; print(sys.executable)"
           uv run python -c "import fastapi; print('fastapi:', fastapi.__version__)"
           uv run python -c "import pydantic; print('pydantic:', pydantic.__version__)"
-          uv run python -m pip list
+          uv pip list
 
       - name: Lint
         run: uv run ruff check .
